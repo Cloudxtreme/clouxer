@@ -1,0 +1,36 @@
+textarea {
+    resize: vertical;
+}
+
+.center-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    overflow: auto;
+}
+
+.center-container:after,
+.center-block {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.center-container:after {
+    content: '';
+    height: 100%;
+    margin-left: -0.25em; /* To offset spacing. May vary by font */
+}
+
+
+.center-block {
+    max-width: 98%; /* Prevents issues with long content causes the content block to be pushed to the top */
+    /* max-width: calc(100% - 0.25em) /* Only for IE9+ */
+    text-align: center;
+    font-family: 'Lato', sans-serif;
+    text-shadow: none;
+    vertical-align: middle;
+}

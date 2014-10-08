@@ -1,0 +1,31 @@
+doctype
+html(lang='en')
+head
+    meta(charset='utf-8')
+    meta(http-equiv='X-UA-Compatible', content='IE=edge')
+    meta(name='viewport', content='width=device-width, initial-scale=1')
+    title
+        =title
+    link(href='/bootstrap/dist/css/bootstrap.min.css', rel='stylesheet')
+    body
+        #main(style='width: 840px; height: auto; margin: 100px auto auto auto;')
+            #main-top.row
+                a(href='/user')
+                    button.btn.btn-primary(type='submit', style='float: left;')
+                        span(class="glyphicon glyphicon-chevron-left")
+                        | Back
+                a(href='/logout')
+                    button.btn.btn-danger(type='submit', style='float: right;') Logout
+                span(style='float: right; margin-top: 5px; margin-right: 10px;')
+                    =email
+            #main-mid.row(style='margin-top: 10px;')
+                .panel.panel-primary
+                    .panel-heading(style='height: 50px;')
+                        h3.panel-title
+                            div(style='float: left; width: 100px; margin-top: 7px;') User Settings
+                    .panel-body(style='margin: 0px 15px 5px 15px;')
+
+                div(style="font-size:xx-small;") © CLOUXER, INC
+    script(src='/jquery/dist/jquery.min.js')
+    script(src='/bootstrap/dist/js/bootstrap.min.js')
+    script(src='/js/dns.js')

@@ -1,0 +1,50 @@
+doctype
+html(lang='en')
+head
+    meta(charset='utf-8')
+    meta(http-equiv='X-UA-Compatible', content='IE=edge')
+    meta(name='viewport', content='width=device-width, initial-scale=1')
+    title
+        =title
+    link(href='/bootstrap/dist/css/bootstrap.min.css', rel='stylesheet')
+    link(href='/css/register.css', rel='stylesheet')
+
+    script(src='/jquery/dist/jquery.min.js')
+    script(src='/bootstrap/dist/js/bootstrap.min.js')
+
+    body
+        .center-container
+            .center-block(style='width: 350px;')
+                .panel.panel-primary
+                    .panel-heading
+                        h3.panel-title(style='text-align: left;') Register
+                    .panel-body(style='text-align: left;')
+                        - if (error == true) {
+                            .alert.alert-danger(role='alert')
+                                =msg
+                        -}
+                        form(action='/register', method='post')
+                            .input-group
+                                span.input-group-addon
+                                    span.glyphicon.glyphicon-user
+                                input.form-control(name='username', type='text', placeholder='Username')
+                            .input-group(style='margin-top: 15px;')
+                                span.input-group-addon
+                                    span.glyphicon.glyphicon-envelope
+                                input.form-control(name='email1', type='text', placeholder='Email address')
+                            .input-group(style='margin-top: 15px;')
+                                span.input-group-addon
+                                    span.glyphicon.glyphicon-envelope
+                                input.form-control(name='email2', type='text', placeholder='Confirm email address')
+                            .input-group(style='margin-top: 15px;')
+                                span.input-group-addon
+                                    span.glyphicon.glyphicon-asterisk
+                                input.form-control(name='password1', type='password', placeholder='Password')
+                            .input-group(style='margin-top: 15px;')
+                                span.input-group-addon
+                                    span.glyphicon.glyphicon-asterisk
+                                input.form-control(name='password2', type='password', placeholder='Confirm password')
+                            input(name='tos', type='checkbox', style='margin-top: 24px;')
+                            |  I agree to TOS
+                            button.btn.btn-primary(type='sumbit', style='margin-top: 15px; float: right;') Register
+                            form

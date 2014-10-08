@@ -1,0 +1,560 @@
+doctype
+html(lang='en')
+head
+    meta(charset='utf-8')
+    meta(http-equiv='X-UA-Compatible', content='IE=edge')
+    meta(name='viewport', content='width=device-width, initial-scale=1')
+    title
+        =title
+
+    link(href='/bootstrap/dist/css/bootstrap.min.css', rel='stylesheet')
+    script.
+        var domain = "#{domain}";
+    body
+        #main(style='width: 840px; height: auto; margin: 100px auto auto auto;')
+            #main-top.row
+                a(href='/user')
+                    button.btn.btn-primary(type='submit', style='float: left;')
+                        span(class="glyphicon glyphicon-chevron-left")
+                        |      Back
+                a(href='/logout')
+                    button.btn.btn-danger(type='submit', style='float: right;') Logout
+                //a(href='/settings')
+                    button.btn.btn-default(style='float: right; margin-right: 10px;', type='button')
+                        span.glyphicon.glyphicon-cog(style='padding-top: 2px;')
+                span(style='float: right; margin-top: 5px; margin-right: 10px;')
+                    =email
+            #main-mid.row(style='margin-top: 10px;')
+                .panel.panel-primary
+                    .panel-heading(style='height: 50px;')
+                        h3.panel-title
+                            div(style='float: left; width: 100px; margin-top: 7px;') Type
+                            div(style='float: left; width: 300px; margin-top: 7px;') Name
+                            div(style='float: left; width: 230px; margin-top: 7px;') Value
+                            div(style='float: left; width: 100px; margin-top: 7px;') TTL
+                    .panel-body#recordtable(style='margin: 0px 15px 5px 15px;')
+                        - var getTextTTLFromSec = function(ttl) {
+                        -     ttl = parseInt(ttl);
+                        -     if (ttl == 60) {
+                        -         return "Automatic";
+                        -     } else if (ttl == 5*60) {
+                        -         return "5 mins";
+                        -     } else if (ttl == 10*60) {
+                        -         return "10 mins";
+                        -     } else if (ttl == 15*60) {
+                        -         return "15 mins";
+                        -     } else if (ttl == 30*60) {
+                        -         return "30 mins";
+                        -     } else if (ttl == 60*60) {
+                        -         return "1 hour";
+                        -     } else if (ttl == 2*60*60) {
+                        -         return "2 hours";
+                        -     } else if (ttl == 12*60*60) {
+                        -         return "12 hours";
+                        -     } else if (24*60*60) {
+                        -         return "1 day";
+                        -     } else {
+                        -         return "Automatic";
+                        -     }
+                        -  }
+
+
+                        - for (var i = 0; i<arecordlist.length; i++) {
+                            - var random = Math.floor((Math.random() * 9999999) + 1);
+                            div(id="record_row_#{random}", class='row', style='margin-top: 10px;')
+                                div(style='float: left; width: 100px; margin-top: 7px;') A
+                                div(style='float: left; margin-top: 7px; width: 300px;')
+                                    - if (arecordlist[i]['name'] == '@') {
+                                        = arecordlist[i]['domain']
+                                    - } else {
+                                        = arecordlist[i]['name'] + '.' + arecordlist[i]['domain']
+                                    - }
+                                div(style='float: left; width: 230px;')
+                                    div(style='float: left; margin-top: 7px;') points to
+                                    div(style='float: left; margin-top: 7px; width: 140px; margin-left: 10px;')
+                                        = arecordlist[i]['value']
+                                div(style='float: left; width: 90px; margin-top: 7px;')
+                                    = getTextTTLFromSec(arecordlist[i]['ttl'])
+                                button.btn.btn-sm.btn-danger(id='rec_a_cloud_#{random}', type='button', onclick='cloudARecord(\'#{random}\',\''+ arecordlist[i]["name"] +'\',\''+ arecordlist[i]["value"] +'\')', style='float: left; margin-top: 2px;')
+                                    - if (arecordlist[i]['active'] == true) {
+                                        span.glyphicon.glyphicon-cloud
+                                    - } else {
+                                        span.glyphicon.glyphicon-cloud-download
+                                    - }
+
+                                button.btn.btn-sm.btn-danger(id='rec_a_remove_#{random}', onclick='removeARecord(\'#{random}\',\''+ arecordlist[i]["name"] +'\',\''+ arecordlist[i]["value"] +'\')', type='button', style='float: right; margin-top: 2px;')
+                                    span.glyphicon.glyphicon-remove
+                                    |  Remove
+                        - }
+
+
+                        - for (var i = 0; i < cnamerecordlist.length; i++) {
+                            - var random = Math.floor((Math.random() * 9999999) + 1);
+                            div(id="record_row_#{random}", class='row', style='margin-top: 10px;')
+                                div(style='float: left; width: 100px; margin-top: 7px;') CNAME
+                                div(style='float: left; margin-top: 7px; width: 300px;')
+                                    - if (cnamerecordlist[i]['name'] == '@') {
+                                        = cnamerecordlist[i]['domain']
+                                    - } else {
+                                        = cnamerecordlist[i]['name'] + '.' + cnamerecordlist[i]['domain']
+                                    - }
+                                div(style='float: left; width: 230px;')
+                                    div(style='float: left; margin-top: 7px;') is an alias of
+                                    div(style='float: left; margin-top: 7px; width: 140px; margin-left: 10px;')
+                                        = cnamerecordlist[i]['value']
+                                div(style='float: left; width: 100px; margin-top: 7px;')
+                                    = getTextTTLFromSec(cnamerecordlist[i]['ttl'])
+                                button.btn.btn-sm.btn-danger(id='rec_cname_remove_#{random}', onclick='removeCNAMERecord(\'#{random}\',\''+ cnamerecordlist[i]["name"] +'\',\''+ cnamerecordlist[i]["value"] +'\')', type='button', style='float: right; margin-top: 2px;')
+                                    span.glyphicon.glyphicon-remove
+                                    |  Remove
+                        - }
+
+
+                        - for (var i = 0; i < mxrecordlist.length; i++) {
+                            - var random = Math.floor((Math.random() * 9999999) + 1);
+                            div(id='record_row_#{random}', class='row', style='margin-top: 10px;')
+                                div(style='float: left; width: 100px; margin-top: 7px;') MX
+                                div(style='float: left; margin-top: 7px; width: 190px;')
+                                    - if (mxrecordlist[i]['name'] == '@') {
+                                        = mxrecordlist[i]['domain']
+                                    - } else {
+                                        = mxrecordlist[i]['name'] + '.' + mxrecordlist[i]['domain']
+                                    - }
+                                div(style='float: left; width: 340px;')
+                                    div
+                                        div(style='float: left; margin-top: 7px;') mail handled by
+                                        div(style='float: left; width: 200px; margin-top: 7px; margin-left: 10px;')
+                                            = mxrecordlist[i]['value']
+                                    div
+                                        div(style='float: left; margin-top: 22px;') with priority
+                                        div(style='float: left; width: 100px; margin-top: 22px; margin-left: 38px;')
+                                            = mxrecordlist[i]['priority']
+                                div(style='float: left; width: 100px; margin-top: 7px;')
+                                    = getTextTTLFromSec(mxrecordlist[i]['ttl'])
+                                button.btn.btn-sm.btn-danger(id='rec_mx_remove_#{random}', onclick='removeMXRecord(\'#{random}\',\''+ mxrecordlist[i]["name"] +'\',\''+ mxrecordlist[i]["value"] +'\')', type='button', style='float: right; margin-top: 2px;')
+                                    span.glyphicon.glyphicon-remove
+                                    |  Remove
+                        - }
+
+
+                        - for (var i = 0; i < txtrecordlist.length; i++) {
+                            - var random = Math.floor((Math.random() * 9999999) + 1);
+
+                            div(id='record_row_#{random}', class='row' style='margin-top: 10px;')
+                                div(style='float: left; width: 100px; margin-top: 7px;') TXT
+                                div(style='float: left; margin-top: 7px; width: 300px;')
+                                    - if (txtrecordlist[i]['name'] == '@') {
+                                        = txtrecordlist[i]['domain']
+                                    - } else {
+                                        = txtrecordlist[i]['name'] + '.' + txtrecordlist[i]['domain']
+                                    - }
+                                div(style='float: left; width: 230px;')
+                                    div(style='float: left; margin-top: 7px; width: 140px;')
+                                        =txtrecordlist[i]['value']
+                                div(style='float: left; width: 100px; margin-top: 7px;')
+                                    = getTextTTLFromSec(txtrecordlist[i]['ttl'])
+                                button.btn.btn-sm.btn-danger(id='rec_txt_remove_#{random}', onclick='removeTXTRecord(\'#{random}\',\''+ txtrecordlist[i]["name"] +'\',\''+ txtrecordlist[i]["value"] +'\')', type='button', style='float: right; margin-top: 2px;')
+                                    span.glyphicon.glyphicon-remove
+                                    |  Remove
+                        - }
+
+                        - for (var i = 0; i < spfrecordlist.length; i++) {
+                            - var random = Math.floor((Math.random() * 9999999) + 1);
+                            div(id='record_row_#{random}', class='row' style='margin-top: 10px;')
+                                div(style='float: left; width: 100px; margin-top: 7px;') SPF
+                                div(style='float: left; margin-top: 7px; width: 300px;')
+                                    - if (spfrecordlist[i]['name'] == '@') {
+                                        = spfrecordlist[i]['domain']
+                                    - } else {
+                                        = spfrecordlist[i]['name'] + '.' + spfrecordlist[i]['domain']
+                                    - }
+                                div(style='float: left; width: 230px;')
+                                    div(style='float: left; margin-top: 7px; width: 140px;')
+                                        = spfrecordlist[i]['value']
+                                div(style='float: left; width: 100px; margin-top: 7px;')
+                                    = getTextTTLFromSec(spfrecordlist[i]['ttl'])
+                                button.btn.btn-sm.btn-danger(id='rec_spf_remove_#{random}', onclick='removeSPFRecord(\'#{random}\',\''+ spfrecordlist[i]["name"] +'\',\''+ spfrecordlist[i]["value"] +'\')', type='button', style='float: right; margin-top: 2px;')
+                                    span.glyphicon.glyphicon-remove
+                                    |  Remove
+                        - }
+
+                        - for (var i = 0; i < aaaarecordlist.length; i++) {
+                            - var random = Math.floor((Math.random() * 9999999) + 1);
+                            div(id='record_row_#{random}', class='row' style='margin-top: 10px;')
+                                div(style='float: left; width: 100px; margin-top: 7px;') AAAA
+                                div(style='float: left; margin-top: 7px; width: 300px;')
+                                    - if (aaaarecordlist[i]['name'] == '@') {
+                                        = aaaarecordlist[i]['domain']
+                                    - } else {
+                                        = aaaarecordlist[i]['name'] + '.' + aaaarecordlist[i]['domain']
+                                    - }
+                                div(style='float: left; width: 230px;')
+                                    div(style='float: left; margin-top: 7px;') points to
+                                    div(style='float: left; margin-top: 7px; width: 140px; margin-left: 10px;')
+                                        = aaaarecordlist[i]['value']
+                                div(style='float: left; width: 90px; margin-top: 7px;')
+                                    = getTextTTLFromSec(aaaarecordlist[i]['ttl'])
+                                button.btn.btn-sm.btn-danger(id='rec_aaaa_cloud_#{random}', onclick='cloudAAAARecord(\'#{random}\',\''+ aaaarecordlist[i]["name"] +'\',\''+ aaaarecordlist[i]["value"] +'\')', type='button', style='float: left; margin-top: 2px;')
+                                    - if (arecordlist[i]['active'] == true) {
+                                        span.glyphicon.glyphicon-cloud
+                                    - } else {
+                                        span.glyphicon.glyphicon-cloud-download
+                                    - }
+                                button.btn.btn-sm.btn-danger(id='rec_aaaa_remove_#{random}', onclick='removeAAAARecord(\'#{random}\',\''+ aaaarecordlist[i]["name"] +'\',\''+ aaaarecordlist[i]["value"] +'\')', type='button', style='float: right; margin-top: 2px;')
+                                    span.glyphicon.glyphicon-remove
+                                    |  Remove
+                        - }
+
+                        - for (var i = 0; i < nsrecordlist.length; i++) {
+                            - var random = Math.floor((Math.random() * 9999999) + 1);
+                            - if (nsrecordlist[i]['name'] != '@') {
+                                div(id='record_row_#{random}', class='row' style='margin-top: 10px;')
+                                    div(style='float: left; width: 100px; margin-top: 7px;') NS
+                                    div(style='float: left; margin-top: 7px; width: 300px;')
+                                        - if (nsrecordlist[i]['name'] == '@') {
+                                            = nsrecordlist[i]['domain']
+                                        - } else {
+                                            = nsrecordlist[i]['name'] + '.' + nsrecordlist[i]['domain']
+                                        - }
+                                    div(style='float: left; width: 230px;')
+                                        div(style='float: left; margin-top: 7px;') managed by
+                                        div(style='float: left; margin-top: 7px; width: 130px; margin-left: 10px;')
+                                            = nsrecordlist[i]['value']
+                                    div(style='float: left; width: 100px; margin-top: 7px;')
+                                        = getTextTTLFromSec(nsrecordlist[i]['ttl'])
+                                    button.btn.btn-sm.btn-danger(id='rec_ns_remove_#{random}', onclick='removeNSRecord(\'#{random}\',\''+ nsrecordlist[i]["name"] +'\',\''+ nsrecordlist[i]["value"] +'\')', type='button', style='float: right; margin-top: 2px;')
+                                        span.glyphicon.glyphicon-remove
+                                        |  Remove
+                            - }
+                        - }
+
+                        - for (var i = 0; i < locrecordlist.length; i++) {
+                            - var random = Math.floor((Math.random() * 9999999) + 1);
+
+                            div(id='record_row_#{random}', class='row' style='margin-top: 10px;')
+                                div(style='float: left; width: 100px; margin-top: 7px;') LOC
+                                div(style='float: left; margin-top: 7px; width: 300px;')
+                                    - if (locrecordlist[i]['name'] == '@') {
+                                        = locrecordlist[i]['domain']
+                                    - } else {
+                                        = locrecordlist[i]['name'] + '.' + locrecordlist[i]['domain']
+                                    - }
+                                div(style='float: left; width: 230px;')
+                                    div(style='float: left; margin-top: 7px; width: 130px;')
+                                        =locrecordlist[i]['value']
+                                div(style='float: left; width: 100px; margin-top: 7px;')
+                                    = getTextTTLFromSec(locrecordlist[i]['ttl'])
+                                button.btn.btn-sm.btn-danger(id='rec_loc_remove_#{random}', onclick='removeLOCRecord(\'#{random}\',\''+ locrecordlist[i]["name"] +'\',\''+ locrecordlist[i]["value"] +'\')', type='button', style='float: right; margin-top: 2px;')
+                                    span.glyphicon.glyphicon-remove
+                                    |  Remove
+                        - }
+
+                #alertzone
+
+                #new_a_record.panel.panel-default
+                    .panel-body
+                        div(style='float: left; width: 100px;')
+                            select#new_a_type(style='margin-top: 7px;')
+                                option(selected='selected', value='a') A
+                                option(value='cname') CNAME
+                                option(value='mx') MX
+                                option(value='txt') TXT
+                                option(value='spf') SPF
+                                //option(value='aaaa') AAAA
+                                option(value='ns') NS
+                                option(value='loc') LOC
+                        div(style='float: left; width: 150px; padding-right: 10px;')
+                            input#new_a_name.form-control(placeholder='e.g. @')
+                        div(style='float: left; margin-top: 7px; width: 150px;')
+                            ="."+domain
+                        div(style='float: left; width: 230px;')
+                            div(style='float: left; margin-top: 7px;') points to
+                            div(style='float: right; margin-right: 10px;')
+                                input#new_a_value.form-control(style='width: 150px;', placeholder='e.g. 127.0.0.1')
+                        div(style='float: left; width: 100px;')
+                            select#new_a_ttl(style='margin-top: 7px;')
+                                option(selected='selected', value='auto') Automatic
+                                option(value='5m') 5 mins
+                                option(value='10m') 10 mins
+                                option(value='15m') 15 mins
+                                option(value='30m') 30 mins
+                                option(value='1h') 1 hours
+                                option(value='2h') 2 hours
+                                option(value='12h') 12 hours
+                                option(value='24h') 1 day
+                        button.btn.btn-sm.btn-success#new_a_add(onclick='addARecord()', type='button', style='float: right; margin-top: 2px;')
+                            span.glyphicon.glyphicon-plus
+                            |  Add
+
+                #new_cname_record.panel.panel-default
+                    .panel-body
+                        div(style='float: left; width: 100px;')
+                            select#new_cname_type(style='margin-top: 7px;')
+                                option(value='a') A
+                                option(value='cname', selected='selected') CNAME
+                                option(value='mx') MX
+                                option(value='txt') TXT
+                                option(value='spf') SPF
+                                //option(value='aaaa') AAAA
+                                option(value='ns') NS
+                                option(value='loc') LOC
+                        div(style='float: left; width: 150px; padding-right: 10px;')
+                            input#new_cname_name.form-control(placeholder='e.g. @')
+                        div(style='float: left; margin-top: 7px; width: 150px;')
+                            ="."+domain
+                        div(style='float: left; width: 230px;')
+                            div(style='float: left; margin-top: 7px;') is an alias of
+                            div(style='float: right; margin-right: 10px;')
+                                input#new_cname_value.form-control(style='width: 130px;', placeholder='e.g. domain.com')
+                        div(style='float: left; width: 100px;')
+                            select#new_cname_ttl(style='margin-top: 7px;')
+                                option(selected='selected', value='auto') Automatic
+                                option(value='5m') 5 mins
+                                option(value='10m') 10 mins
+                                option(value='15m') 15 mins
+                                option(value='30m') 30 mins
+                                option(value='1h') 1 hours
+                                option(value='2h') 2 hours
+                                option(value='12h') 12 hours
+                                option(value='24h') 1 day
+                        button.btn.btn-sm.btn-success#new_cname_add(onclick='addCNAMERecord()', type='button', style='float: right; margin-top: 2px;')
+                            span.glyphicon.glyphicon-plus
+                            |  Add
+
+                #new_mx_record.panel.panel-default
+                    .panel-body
+                        div(style='float: left; width: 100px;')
+                            select#new_mx_type(style='margin-top: 7px;')
+                                option(value='a') A
+                                option(value='cname') CNAME
+                                option(value='mx', selected='selected') MX
+                                option(value='txt') TXT
+                                option(value='spf') SPF
+                                //option(value='aaaa') AAAA
+                                option(value='ns') NS
+                                option(value='loc') LOC
+
+                        div(style='float: left; width: 150px; padding-right: 10px;')
+                            input#new_mx_name.form-control(placeholder='e.g. @')
+                        div(style='float: left; margin-top: 7px; width: 120px;')
+                            ="."+domain
+                        div(style='float: left; width: 310px;')
+                            div
+                                div(style='float: left; margin-top: 7px;') mail handled by
+                                div(style='float: right; margin-right: 10px;')
+                                    input#new_mx_value.form-control(style='width: 195px;', placeholder='e.g. domain.com')
+                            div
+                                div(style='float: left; margin-top: 22px;') with priority
+                                div(style='float: left; margin-top: 10px; margin-left: 33px;')
+                                    input#new_mx_priority.form-control(style='width: 70px;')
+                        div(style='float: left; width: 100px;')
+                            select#new_mx_ttl(style='margin-top: 7px;')
+                                option(selected='selected', value='auto') Automatic
+                                option(value='5m') 5 mins
+                                option(value='10m') 10 mins
+                                option(value='15m') 15 mins
+                                option(value='30m') 30 mins
+                                option(value='1h') 1 hours
+                                option(value='2h') 2 hours
+                                option(value='12h') 12 hours
+                                option(value='24h') 1 day
+                        button.btn.btn-sm.btn-success#new_mx_add(onclick='addMXRecord()', type='button', style='float: right; margin-top: 2px;')
+                            span.glyphicon.glyphicon-plus
+                            |  Add
+
+                #new_txt_record.panel.panel-default
+                    .panel-body
+                        div(style='float: left; width: 100px;')
+                            select#new_txt_type(style='margin-top: 7px;')
+                                option(value='a') A
+                                option(value='cname') CNAME
+                                option(value='mx') MX
+                                option(value='txt', selected='selected') TXT
+                                option(value='spf') SPF
+                                //option(value='aaaa') AAAA
+                                option(value='ns') NS
+                                option(value='loc') LOC
+                        div(style='float: left; width: 150px; padding-right: 10px;')
+                            input#new_txt_name.form-control(placeholder='e.g. www')
+                        div(style='float: left; margin-top: 7px; width: 150px;')
+                            ="."+domain
+                        div(style='float: left; width: 230px;')
+                            div(style='float: right; margin-right: 10px;')
+                                input#new_txt_value.form-control(style='width: 220px;', placeholder='TXT record value')
+                        div(style='float: left; width: 100px;')
+                            select#new_txt_ttl(style='margin-top: 7px;')
+                                option(selected='selected', value='auto') Automatic
+                                option(value='5m') 5 mins
+                                option(value='10m') 10 mins
+                                option(value='15m') 15 mins
+                                option(value='30m') 30 mins
+                                option(value='1h') 1 hours
+                                option(value='2h') 2 hours
+                                option(value='12h') 12 hours
+                                option(value='24h') 1 day
+                        button.btn.btn-sm.btn-success#new_txt_add(onclick='addTXTRecord()', type='button', style='float: right; margin-top: 2px;')
+                            span.glyphicon.glyphicon-plus
+                            |  Add
+
+                #new_spf_record.panel.panel-default
+                    .panel-body
+                        div(style='float: left; width: 100px;')
+                            select#new_spf_type(style='margin-top: 7px;')
+                                option(value='a') A
+                                option(value='cname') CNAME
+                                option(value='mx') MX
+                                option(value='txt') TXT
+                                option(value='spf', selected='selected') SPF
+                                //option(value='aaaa') AAAA
+                                option(value='ns') NS
+                                option(value='loc') LOC
+                        div(style='float: left; width: 150px; padding-right: 10px;')
+                            input#new_spf_name.form-control(placeholder='e.g. @')
+                        div(style='float: left; margin-top: 7px; width: 150px;')
+                            ="." +domain
+                        div(style='float: left; width: 230px;')
+                            div(style='float: right; margin-right: 10px;')
+                                input#new_spf_value.form-control(style='width: 220px;', placeholder='SPF record value')
+                        div(style='float: left; width: 100px;')
+                            select#new_spf_ttl(style='margin-top: 7px;')
+                                option(selected='selected', value='auto') Automatic
+                                option(value='5m') 5 mins
+                                option(value='10m') 10 mins
+                                option(value='15m') 15 mins
+                                option(value='30m') 30 mins
+                                option(value='1h') 1 hours
+                                option(value='2h') 2 hours
+                                option(value='12h') 12 hours
+                                option(value='24h') 1 day
+                        button.btn.btn-sm.btn-success#new_spf_add(onclick='addSPFRecord()', type='button', style='float: right; margin-top: 2px;')
+                            span.glyphicon.glyphicon-plus
+                            |  Add
+
+                #new_aaaa_record.panel.panel-default
+                    .panel-body
+                        div(style='float: left; width: 100px;')
+                            select#new_aaaa_type(style='margin-top: 7px;')
+                                option(value='a') A
+                                option(value='cname') CNAME
+                                option(value='mx') MX
+                                option(value='txt') TXT
+                                option(value='spf') SPF
+                                //option(selected='selected', value='aaaa') AAAA
+                                option(value='ns') NS
+                                option(value='loc') LOC
+                        div(style='float: left; width: 150px; padding-right: 10px;')
+                            input#new_aaaa_name.form-control(placeholder='e.g. @')
+                        div(style='float: left; margin-top: 7px; width: 150px;')
+                            ="."+domain
+                        div(style='float: left; width: 230px;')
+                            div(style='float: left; margin-top: 7px;') points to
+                            div(style='float: right; margin-right: 10px;')
+                                input#new_aaaa_value.form-control(style='width: 150px;', placeholder='e.g. ::1')
+                        div(style='float: left; width: 100px;')
+                            select#new_aaaa_ttl(style='margin-top: 7px;')
+                                option(selected='selected', value='auto') Automatic
+                                option(value='5m') 5 mins
+                                option(value='10m') 10 mins
+                                option(value='15m') 15 mins
+                                option(value='30m') 30 mins
+                                option(value='1h') 1 hours
+                                option(value='2h') 2 hours
+                                option(value='12h') 12 hours
+                                option(value='24h') 1 day
+                        button.btn.btn-sm.btn-success#new_aaaa_add(onclick='addAAAARecord()', type='button', style='float: right; margin-top: 2px;')
+                            span.glyphicon.glyphicon-plus
+                            |  Add
+
+                #new_ns_record.panel.panel-default
+                    .panel-body
+                        div(style='float: left; width: 100px;')
+                            select#new_ns_type(style='margin-top: 7px;')
+                                option(value='a') A
+                                option(value='cname') CNAME
+                                option(value='mx') MX
+                                option(value='txt') TXT
+                                option(value='spf') SPF
+                                //option(value='aaaa') AAAA
+                                option(selected='selected', value='ns') NS
+                                option(value='loc') LOC
+                        div(style='float: left; width: 150px; padding-right: 10px;')
+                            input#new_ns_name.form-control(placeholder='e.g. www')
+                        div(style='float: left; margin-top: 7px; width: 150px;')
+                            ="."+domain
+                        div(style='float: left; width: 230px;')
+                            div(style='float: left; margin-top: 7px;') managed by
+                            div(style='float: right; margin-right: 10px;')
+                                input#new_ns_value.form-control(style='width: 130px;', placeholder='e.g. b.ns.com')
+                        div(style='float: left; width: 100px;')
+                            select#new_ns_ttl(style='margin-top: 7px;')
+                                option(selected='selected', value='auto') Automatic
+                                option(value='5m') 5 mins
+                                option(value='10m') 10 mins
+                                option(value='15m') 15 mins
+                                option(value='30m') 30 mins
+                                option(value='1h') 1 hours
+                                option(value='2h') 2 hours
+                                option(value='12h') 12 hours
+                                option(value='24h') 1 day
+                        button.btn.btn-sm.btn-success#new_ns_add(onclick='addNSRecord()', type='button', style='float: right; margin-top: 2px;')
+                            span.glyphicon.glyphicon-plus
+                            |  Add
+
+                #new_loc_record.panel.panel-default
+                    .panel-body
+                        div(style='float: left; width: 100px;')
+                            select#new_loc_type(style='margin-top: 7px;')
+                                option(value='a') A
+                                option(value='cname') CNAME
+                                option(value='mx') MX
+                                option(value='txt') TXT
+                                option(value='spf') SPF
+                                //option(value='aaaa') AAAA
+                                option(value='ns') NS
+                                option(value='loc', selected='selected') LOC
+                        div(style='float: left; width: 150px; padding-right: 10px;')
+                            input#new_loc_name.form-control(placeholder='e.g. @')
+                        div(style='float: left; margin-top: 7px; width: 150px;')
+                            ="."+domain
+                        div(style='float: left; width: 230px;')
+                            div(style='float: right; margin-right: 10px;')
+                                input#new_loc_value.form-control(style='width: 220px;', placeholder='Loc record value')
+                        div(style='float: left; width: 100px;')
+                            select#new_loc_ttl(style='margin-top: 7px;')
+                                option(selected='selected', value='auto') Automatic
+                                option(value='5m') 5 mins
+                                option(value='10m') 10 mins
+                                option(value='15m') 15 mins
+                                option(value='30m') 30 mins
+                                option(value='1h') 1 hours
+                                option(value='2h') 2 hours
+                                option(value='12h') 12 hours
+                                option(value='24h') 1 day
+                        button.btn.btn-sm.btn-success#new_loc_add(onclick='addLOCRecord()', type='button', style='float: right; margin-top: 2px;')
+                            span.glyphicon.glyphicon-plus
+                            |  Add
+
+                - if (domaindata['setup'] == 0 && arecordlist.length == 0) {
+
+                    div(class="alert alert-warning alert-dismissible" role="alert")
+                        button(type="button" class="close" data-dismiss="alert")
+                            span(aria-hidden="true") &times;
+                            span(class="sr-only") Close
+                        strong A Records not found !
+                        |  DNS server could not be reached or empty A record
+                - }
+
+                - if (domaindata['setup'] == 0) {
+                    div(style="text-align: center;")
+                        button.btn.btn-success(style="margin-top: 10px;", onClick="window.location.replace('/setup/next/#{domain}');") I've added all missed records, continue
+                            = " "
+                            span(class="glyphicon glyphicon-chevron-right")
+                - }
+
+                div(style="font-size:xx-small;") © CLOUXER, INC
+
+
+
+    script(src='/jquery/dist/jquery.min.js')
+    script(src='/bootstrap/dist/js/bootstrap.min.js')
+    script(src='/js/dns.js')

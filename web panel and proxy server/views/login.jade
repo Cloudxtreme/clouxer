@@ -1,0 +1,37 @@
+doctype
+html(lang='en')
+head
+    meta(charset='utf-8')
+    meta(http-equiv='X-UA-Compatible', content='IE=edge')
+    meta(name='viewport', content='width=device-width, initial-scale=1')
+    title
+        =title
+    link(href='/bootstrap/dist/css/bootstrap.min.css', rel='stylesheet')
+    link(href='/css/login.css', rel='stylesheet')
+
+    script(src='/jquery/dist/jquery.min.js')
+    script(src='/bootstrap/dist/js/bootstrap.min.js')
+
+    body
+        .center-container
+            .center-block(style='width: 350px;')
+                .panel.panel-primary
+                    .panel-heading
+                        h3.panel-title(style='text-align: left;') Login
+                    .panel-body(style='text-align: left;')
+                        - if (error == true) {
+                            .alert.alert-danger(role='alert')
+                                =msg
+                        -}
+                        form(action='/login', method='post')
+                            .input-group
+                                span.input-group-addon
+                                    span.glyphicon.glyphicon-envelope
+                                input.form-control(name='email', type='text', placeholder='Email')
+                            .input-group(style='margin-top: 15px;')
+                                span.input-group-addon
+                                    span.glyphicon.glyphicon-asterisk
+                                input.form-control(name='password', type='password', placeholder='Password')
+                            button.btn.btn-primary(type='sumbit', style='margin-top: 15px; float: right;') Login
+                            form
+                                //a(href='/forgot', style='margin-top: 20px; float: left;') Forgot password?

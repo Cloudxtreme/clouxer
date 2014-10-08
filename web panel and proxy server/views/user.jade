@@ -1,0 +1,121 @@
+doctype
+html(lang='en')
+head
+    meta(charset='utf-8')
+    meta(http-equiv='X-UA-Compatible', content='IE=edge')
+    meta(name='viewport', content='width=device-width, initial-scale=1')
+    title
+        =title
+    link(href='/bootstrap/dist/css/bootstrap.min.css', rel='stylesheet')
+
+    script.
+        var domcount = parseInt("#{domainlist.length}");
+    body
+        #main(style='width: 840px; height: auto; margin: 100px auto auto auto;')
+            #main-top.row
+                a(href='/logout')
+                    button.btn.btn-danger(type='submit', style='float: right;') Logout
+                //a(href='/settings')
+                    button.btn.btn-default(style='float: right; margin-right: 10px;', type='button')
+                        span.glyphicon.glyphicon-cog(style='padding-top: 2px;')
+                span(style='float: right; margin-top: 5px; margin-right: 10px;')
+                    = email
+            #main-mid.row(style='margin-top: 10px;')
+
+                .panel.panel-default
+                    .panel-body
+                        input#inp_add_domain.form-control(placeholder='e.g. mydomain.com', style='float: left; width: 700px;')
+                        button#btn_add_domain.btn.btn-success(onclick='addDomain()', type='button', style='float: right; width: 130px;')
+                            span.glyphicon.glyphicon-plus
+                            |  Add website
+
+                #alertzone
+
+                .panel.panel-default
+                    #domain_list.panel-body
+                        - if (domainlist.length > 0) {
+                            - for(var i = 0; i<domainlist.length; i++) {
+                                - if (domainlist[i].verify == false && domainlist[i].setup == 0) {
+                                    div(id="domrow_#{domainlist[i].domain}" class="row" style="height: 50px; margin: 10px; padding 10px; background-color:#FFF;")
+                                        div(style="float: left; text-align: center; width: 250px; margin-top: 15px;")
+                                            =domainlist[i].domain
+                                        div(style="float: left; margin-top: 7px; width: 500px; text-align: center;")
+                                            button(onClick="window.location = '/dns/#{domainlist[i].domain}'" id="btn_install_#{domainlist[i].domain}" type="button" class="btn btn-success")
+                                                span(class="glyphicon glyphicon-chevron-right")
+                                                |  Continue installation
+                                        div(class="btn-group" style="float:right; margin-top: 7px;")
+                                            button(id="btn_dd_#{domainlist[i].domain}" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown")
+                                                span(data-bind="label")
+                                                    span(id="spn_dd_#{domainlist[i].domain}" class="glyphicon glyphicon-wrench")
+                                                |   &nbsp;
+                                                span(class="caret")
+                                            ul(class="dropdown-menu" role="menu")
+                                                li
+                                                    a(onClick="deleteDomain('#{domainlist[i].domain}')" href="javascript:void(0)")
+                                                        span(class="glyphicon glyphicon-trash")
+                                                        |  Delete domain
+                                - } else  if (domainlist[i].verify == false && domainlist[i].setup == 1){
+                                    div(id="domrow_#{domainlist[i].domain}" class="row" style="height: 50px; margin: 10px; padding 10px; background-color:#FFF;")
+                                        div(style="float: left; text-align: center; width: 250px; margin-top: 15px;")
+                                            =domainlist[i].domain
+
+                                        div(style='float: left; width: 400px; color: black; margin-top: 5px; text-align: left;')
+                                            | Finishing up. Waiting for your name servers to change to
+                                            b
+                                                = "    " + nslist[i]['ns1']
+                                            |   and
+                                            b
+                                                = "    " + nslist[i]['ns2']
+
+                                        div(class="btn-group" style="float:right; margin-top: 7px;")
+                                            button(id="btn_dd_#{domainlist[i].domain}" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown")
+                                                span(data-bind="label")
+                                                    span(id="spn_dd_#{domainlist[i].domain}" class="glyphicon glyphicon-wrench")
+                                                |   &nbsp;
+                                                span(class="caret")
+                                            ul(class="dropdown-menu" role="menu")
+                                                li
+                                                    a(onClick="deleteDomain('#{domainlist[i].domain}')" href="javascript:void(0)")
+                                                        span(class="glyphicon glyphicon-trash")
+                                                        |    Delete domain
+
+                                        div(style='float: right; margin-top: 7px; margin-right: 10px;')
+                                            button.btn.btn-info(type='button', id="btn_check_#{domainlist[i].domain}", onClick="checkNSDomain('#{domainlist[i].domain}')")
+                                                span.glyphicon.glyphicon-refresh
+                                                |    Check
+
+                                - } else if (domainlist[i].verify == true && domainlist[i].setup == 1){
+                                    div(id="domrow_#{domainlist[i].domain}", style='height: 50px; margin: 10px; padding10px;background-color: #FFF;')
+                                        div(style='float: left; text-align: center; width: 250px; margin-top: 15px;')
+                                            =domainlist[i].domain
+                                        div(style='float: left; margin-top: 17px; text-align: center;')
+                                            span.glyphicon.glyphicon-leaf
+                                        //div(style='float: left; margin-top: 15px; text-align: right; width: 466px;')
+                                            a(href='javascript:void(0)')  Analytics
+                                        .btn-group(style='float: right; margin-top: 7px;')
+                                            button.btn.btn-default.dropdown-toggle(id="btn_dd_#{domainlist[i].domain}", type='button', data-toggle='dropdown')
+                                                span(data-bind='label')
+                                                    span.glyphicon.glyphicon-wrench(id="spn_dd_#{domainlist[i].domain}")
+                                                |   &nbsp;
+                                                span.caret
+                                            ul.dropdown-menu(role='menu')
+                                                li
+                                                    a(href='/dns/#{domainlist[i].domain}')
+                                                        span.glyphicon.glyphicon-fire
+                                                        |    DNS settings
+                                                li(role="presentation", class="divider")
+                                                li
+                                                    a(onClick="deleteDomain('#{domainlist[i].domain}')" href="javascript:void(0)")
+                                                        span.glyphicon.glyphicon-trash
+                                                        |    Delete domain
+
+                                - }
+                            - }
+                        - } else {
+                            div#nodomain Ops. You have no domain, add a domain for start use clouxer..
+                        - }
+                div(style="font-size:xx-small;") © CLOUXER, INC
+
+    script(src='/jquery/dist/jquery.min.js')
+    script(src='/bootstrap/dist/js/bootstrap.min.js')
+    script(src='/js/user.js')

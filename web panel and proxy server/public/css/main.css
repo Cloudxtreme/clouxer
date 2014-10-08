@@ -1,0 +1,133 @@
+html, body {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+}
+
+html {
+    color: #222;
+    font-size: 1em;
+    line-height: 1.4;
+}
+
+body {
+  color: #fff;
+  background: #000000;
+  font-size: 16px;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 0;
+}
+
+h1 {
+    font-size: 80px;
+    line-height: 80px;
+}
+
+h2 {
+    font-size: 18px;
+    line-height: 18px;
+}
+
+audio,
+canvas,
+img,
+svg,
+video {
+    vertical-align: middle;
+}
+
+textarea {
+    resize: vertical;
+}
+
+.center-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    overflow: auto;
+}
+
+.center-container:after,
+.center-block {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.center-container:after {
+    content: '';
+    height: 100%;
+    margin-left: -0.25em; /* To offset spacing. May vary by font */
+}
+
+
+.center-block {
+    max-width: 98%; /* Prevents issues with long content causes the content block to be pushed to the top */
+    /* max-width: calc(100% - 0.25em) /* Only for IE9+ */
+    text-align: center;
+    font-family: 'Lato', sans-serif;
+    text-shadow: none;
+    vertical-align: middle;
+}
+
+a:link {
+    text-decoration: none;
+    color: #FFFFFF;
+    font-family: 'Lato', sans-serif;
+    text-shadow: none;
+}
+
+a:visited {
+    text-decoration: none;
+    color: #FFFFFF;
+    font-family: 'Lato', sans-serif;
+    text-shadow: none;
+}
+
+a:hover {
+    text-decoration: underline;
+    color: #FFFFFF;
+    font-family: 'Lato', sans-serif;
+    text-shadow: none;
+}
+
+a:active {
+    text-decoration: underline;
+    color: #FFFFFF;
+    font-family: 'Lato', sans-serif;
+    text-shadow: none;
+}
+
+.wb{
+    color: #FFFFFF;
+    font-family: 'Lato', sans-serif;
+    text-shadow: none;
+}
+
+
+.bt {
+    background-color:transparent;
+    border:1px solid #FFFFFF;
+    display:inline-block;
+    cursor:pointer;
+    font-size:19px;
+    padding:16px 31px;
+    text-decoration:none;
+    color: #FFFFFF;
+    font-family: 'Lato', sans-serif;
+    text-shadow: none;
+}
+.bt:hover {
+    background-color: #FFFFFF;
+    color: #000000;
+    text-decoration: none;
+}
+.bt:active {
+    position:relative;
+    top:1px;
+}

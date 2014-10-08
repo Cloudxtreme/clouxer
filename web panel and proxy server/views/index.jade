@@ -1,0 +1,41 @@
+doctype
+html(lang='en')
+head
+    meta(charset='utf-8')
+    meta(http-equiv='X-UA-Compatible', content='IE=edge')
+    meta(name='viewport', content='width=device-width, initial-scale=1')
+    link(href='http://fonts.googleapis.com/css?family=Lato:400,700', rel='stylesheet', type='text/css')
+    link(href='css/main.css', rel='stylesheet')
+
+    script(src='jquery/dist/jquery.min.js')
+    script(src='vide/jquery.vide.min.js')
+
+    title
+        =title
+    body
+        body(data-vide-bg='video/ocean', data-vide-options='loop: false, muted: true, playbackRate: 0.5')
+            .center-container
+                .center-block
+                    h1 CLOUXER
+                    h2 strengthen & secure your website
+                    div(style='margin-top: 40px;')
+                        a.bt(style='margin-right: 10px;', href='/login') Login
+                        a.bt(style='margin-left: 10px;', href='/register') Register
+            div(style='position: absolute; right: 20px; bottom: 10px;')
+                small
+                    em
+                        b
+                            |  mail@clouxer.com
+                        |  - clouxer beta stage, still in development - clouxer does not guarantee trouble-free service
+                //div(style='float: left;')
+                    a(href='/about') About us
+                //div(style='float: left; margin-left: 10px; margin-right: 10px;') -
+                //div(style='float: left;')
+                    a(href='/terms') Terms of service
+                //div(style='float: left; margin-left: 10px; margin-right: 10px;') -
+                //div(style='float: left;')
+                    a(href='javascript:void(0)') contact@clouxer.com
+            div(style='position: absolute; left: 20px; bottom: 10px;')
+                .wb(style='float: left;')
+                div(style='float: left; margin-left: 10px; margin-right: 10px;')
+                .wb(style='float: left;')
